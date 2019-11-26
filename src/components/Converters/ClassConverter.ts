@@ -74,12 +74,16 @@ export class ClassConverter extends RecordConverter {
         for (const field of data.fields) {
             let fieldType;
             let classRow;
+
+            // If the type was defined earlier, fetch the entire thing from the cache.
+            const type = this.recordCache[field.type.toString()] || field.type;
+
             if (TypeHelper.hasDefault(field) || TypeHelper.isOptional(field.type)) {
                 const defaultValue = TypeHelper.hasDefault(field) ? ` = ${TypeHelper.getDefault(field)}` : "";
-                fieldType = `${this.getField(field)}`;
+                fieldType = `${this.getField(field.name, type)}`;
                 classRow = `${TAB}public ${fieldType}${defaultValue};`;
             } else {
-                const convertedType = this.convertType(field.type);
+                const convertedType = this.convertType(type);
                 fieldType = `${field.name}: ${convertedType}`;
                 classRow = `${TAB}public ${field.name}!: ${convertedType};`;
             }

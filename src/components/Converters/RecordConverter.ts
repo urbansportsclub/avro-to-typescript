@@ -1,6 +1,6 @@
 import { SpecialCharacterHelper } from "../../helpers/SpecialCharacterHelper";
 import { TypeHelper } from "../../helpers/TypeHelper";
-import { Field, RecordType, Type } from "../../interfaces/AvroSchema";
+import {EnumType, Field, RecordType, Type} from "../../interfaces/AvroSchema";
 import { ExportModel } from "../../models/ExportModel";
 import { BaseConverter } from "./base/BaseConverter";
 import { EnumConverter } from "./EnumConverter";
@@ -10,6 +10,7 @@ import { PrimitiveConverter } from "./PrimitiveConverter";
 export class RecordConverter extends BaseConverter {
 
     protected interfaceRows: string[] = [];
+    protected recordCache: {[recordName: string]: any} = {};
 
     public convert(data: any): ExportModel {
         data = this.getData(data) as RecordType;
@@ -30,7 +31,7 @@ export class RecordConverter extends BaseConverter {
         rows.push(`export interface ${data.name} {`);
 
         for (const field of data.fields) {
-            const fieldType = `${this.getField(field)};`;
+            const fieldType = `${this.getField(field.name, field.type)};`;
             rows.push(`${SpecialCharacterHelper.TAB}${fieldType}`);
         }
 
@@ -65,8 +66,11 @@ export class RecordConverter extends BaseConverter {
         }
 
         if (TypeHelper.isRecordType(type)) {
-            this.interfaceRows.push(...this.extractInterface(type));
-            this.interfaceRows.push("");
+            if (! (type.name in this.recordCache) ) {
+                this.recordCache[type.name.toString()] = type;
+                this.interfaceRows.push(...this.extractInterface(type));
+                this.interfaceRows.push("");
+            }
 
             return type.name;
         }
@@ -84,7 +88,7 @@ export class RecordConverter extends BaseConverter {
         return "any";
     }
 
-    protected getField(field: Field): string {
-        return `${field.name}${TypeHelper.isOptional(field.type) ? "?" : ""}: ${this.convertType(field.type)}`;
+    protected getField(name: string, type: Type): string {
+        return `${name}${TypeHelper.isOptional(type) ? "?" : ""}: ${this.convertType(type)}`;
     }
 }
