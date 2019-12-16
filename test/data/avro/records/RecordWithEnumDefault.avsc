@@ -1,6 +1,6 @@
 {
   "type" : "record",
-  "name" : "RecordWithEnum",
+  "name" : "RecordWithEnumDefault",
   "namespace" : "records",
   "fields" : [ {
     "name" : "flavor",

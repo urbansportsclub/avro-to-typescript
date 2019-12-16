@@ -24,4 +24,14 @@ describe("New Class Converter test", () => {
         const expected = getExpectedResult(`${expectedDir}/RecordWithRecord.ts.test`);
         expect(actual).to.deep.equal(expected);
     });
+
+    it("should convert a record with default enum field", () => {
+        const converter = new ClassConverter();
+        converter.convert(`${avscDir}/RecordWithEnum.avsc`);
+
+        const actual = converter.joinExports();
+        const expected = getExpectedResult(`${expectedDir}/RecordWithRecord.ts.test`);
+        expect(actual).to.deep.equal(expected);
+    });
+
 });

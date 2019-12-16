@@ -6,7 +6,7 @@ protocol x {
   } = CHOCOLATE;
 
   @namespace("records")
-  record RecordWithEnum {
+  record RecordWithEnumDefault {
     records.Flavor flavor = "VANILLA";
   }
 
