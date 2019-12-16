@@ -1,0 +1,15 @@
+{
+  "type" : "record",
+  "name" : "RecordWithEnumDefault",
+  "namespace" : "records",
+  "fields" : [ {
+    "name" : "flavor",
+    "type" : {
+      "type" : "enum",
+      "name" : "Flavor",
+      "symbols" : [ "VANILLA", "CHOCOLATE" ],
+      "default" : "CHOCOLATE"
+    },
+    "default" : "VANILLA"
+  } ]
+}

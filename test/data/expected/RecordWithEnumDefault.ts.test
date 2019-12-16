@@ -1,0 +1,42 @@
+// tslint:disable
+import { BaseAvroRecord } from "../BaseAvroRecord";
+import { Flavor } from "./FlavorEnum";
+
+export interface RecordWithEnumDefaultInterface {
+    flavor: Flavor;
+}
+
+export class RecordWithEnumDefault extends BaseAvroRecord implements RecordWithEnumDefaultInterface {
+
+    public flavor: Flavor = Flavor.VANILLA;
+
+    public static readonly subject: string = "record-with-enum-default";
+    public static readonly schema: object = {
+    "type": "record",
+    "name": "RecordWithEnumDefault",
+    "namespace": "records",
+    "fields": [
+        {
+            "name": "flavor",
+            "type": {
+                "type": "enum",
+                "name": "Flavor",
+                "symbols": [
+                    "VANILLA",
+                    "CHOCOLATE"
+                ],
+                "default": "CHOCOLATE"
+            },
+            "default": "VANILLA"
+        }
+    ]
+}
+
+    public schema(): object {
+        return RecordWithEnumDefault.schema;
+    }
+
+    public subject(): string {
+        return RecordWithEnumDefault.subject;
+    }
+}

@@ -1,0 +1,7 @@
+{
+  "type" : "enum",
+  "name" : "Flavor",
+  "namespace" : "records",
+  "symbols" : [ "VANILLA", "CHOCOLATE" ],
+  "default" : "CHOCOLATE"
+}
