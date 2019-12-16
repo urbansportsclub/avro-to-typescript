@@ -92,6 +92,12 @@ export class TypeHelper {
             return JSON.stringify(field.default);
         }
 
+        // @ts-ignored
+        if (isObject(field.type) && field.type.type === "enum") {
+            // @ts-ignored
+            return `${field.type.name}.${field.default}`;
+        }
+
         return field.default;
     }
 }
