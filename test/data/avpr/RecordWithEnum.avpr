@@ -1,0 +1,20 @@
+{
+  "protocol" : "x",
+  "namespace" : null,
+  "types" : [ {
+    "type" : "enum",
+    "name" : "Flavor",
+    "namespace" : "records",
+    "symbols" : [ "VANILLA", "CHOCOLATE" ],
+    "default" : "CHOCOLATE"
+  }, {
+    "type" : "record",
+    "name" : "RecordWithEnum",
+    "namespace" : "records",
+    "fields" : [ {
+      "name" : "flavor",
+      "type" : "Flavor"
+    } ]
+  } ],
+  "messages" : { }
+}
