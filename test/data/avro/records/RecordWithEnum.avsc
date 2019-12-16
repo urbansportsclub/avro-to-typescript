@@ -9,6 +9,7 @@
       "name" : "Flavor",
       "symbols" : [ "VANILLA", "CHOCOLATE" ],
       "default" : "CHOCOLATE"
-    }
+    },
+    "default" : "VANILLA"
   } ]
 }

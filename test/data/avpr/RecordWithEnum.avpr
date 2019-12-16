@@ -13,7 +13,8 @@
     "namespace" : "records",
     "fields" : [ {
       "name" : "flavor",
-      "type" : "Flavor"
+      "type" : "Flavor",
+      "default" : "VANILLA"
     } ]
   } ],
   "messages" : { }
