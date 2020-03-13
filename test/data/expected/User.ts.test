@@ -1,4 +1,5 @@
 // tslint:disable
+import { Type } from "avsc"
 import { BaseAvroRecord } from "../../../BaseAvroRecord";
 import { EmailAddressInterface } from "./EmailAddress";
 import { TwitterAccountInterface } from "./TwitterAccount";
@@ -223,5 +224,9 @@ export class User extends BaseAvroRecord implements UserInterface {
 
     public subject(): string {
         return User.subject;
+    }
+
+    public static type(): Type {
+        return User.getTypeForSchema(User.schema);
     }
 }

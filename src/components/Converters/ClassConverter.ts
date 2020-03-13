@@ -57,6 +57,7 @@ export class ClassConverter extends RecordConverter {
         const mainDir = "../".repeat(dirsUp);
 
         rows.push(`// tslint:disable`);
+        rows.push(`import { Type } from "avsc"`);
         rows.push(`import { BaseAvroRecord } from "${mainDir}BaseAvroRecord";`);
 
         for (const exportModel of this.enumExports) {
@@ -134,6 +135,10 @@ export class ClassConverter extends RecordConverter {
         rows.push(``);
         rows.push(`${TAB}public subject(): string {`);
         rows.push(`${TAB}${TAB}return ${data.name}.subject;`);
+        rows.push(`${TAB}}`);
+        rows.push(``);
+        rows.push(`${TAB}public static type(): Type {`);
+        rows.push(`${TAB}${TAB}return ${data.name}.getTypeForSchema(${data.name}.schema);`);
         rows.push(`${TAB}}`);
         rows.push(`}`);
 

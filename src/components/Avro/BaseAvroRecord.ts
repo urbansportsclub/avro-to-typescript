@@ -25,8 +25,4 @@ export abstract class BaseAvroRecord implements AvroRecord {
     public abstract schema(): any;
 
     public abstract subject(): string;
-
-    public getType(): Type {
-        return BaseAvroRecord.getTypeForSchema(this.schema());
-    }
 }

@@ -1,4 +1,5 @@
 // tslint:disable
+import { Type } from "avsc"
 import { BaseAvroRecord } from "../../../BaseAvroRecord";
 import { TradeInterface } from "./Trade";
 
@@ -114,5 +115,9 @@ export class TradeCollection extends BaseAvroRecord implements TradeCollectionIn
 
     public subject(): string {
         return TradeCollection.subject;
+    }
+
+    public static type(): Type {
+        return TradeCollection.getTypeForSchema(TradeCollection.schema);
     }
 }
