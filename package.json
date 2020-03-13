@@ -1,5 +1,5 @@
 {
-  "name": "@chasdevs/avro-to-typescript",
+  "name": "@onefit/avro-to-typescript",
   "version": "1.3.2",
   "description": "Package for converting Avro schema files (.avsc) to TypeScript class files",
   "repository": "git@github.com:chasdevs/avro-to-typescript.git",
@@ -24,6 +24,7 @@
   "scripts": {
     "start": "npm run build && node ./dist/src/index.js",
     "build": "rm -rf dist && tsc",
+    "start:test": "ts-node src/cli.ts -c temp/schema temp/output",
     "prepublishOnly": "npm run test && npm run generate-barrels",
     "generate-barrels": "barrelsby --directory src/ --delete --include components src/interfaces --exclude base Avro/compression Avro/schema_registry",
     "test": "npm run tslint & npm run mocha",
@@ -53,6 +54,7 @@
     "@types/command-line-args": "^4.0.3",
     "@types/command-line-usage": "^5.0.1",
     "@types/fs-extra": "^5.0.3",
+    "ts-node": "^8.6.2",
     "@types/node": "^9.6.21",
     "mocha-typescript": "^1.1.16",
     "tslint": "^5.10.0",

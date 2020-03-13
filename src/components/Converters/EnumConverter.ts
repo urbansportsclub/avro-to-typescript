@@ -1,7 +1,7 @@
-import { SpecialCharacterHelper } from "../../helpers/SpecialCharacterHelper";
-import { EnumType } from "../../interfaces/AvroSchema";
-import { ExportModel } from "../../models/ExportModel";
-import { BaseConverter } from "./base/BaseConverter";
+import {SpecialCharacterHelper} from "../../helpers/SpecialCharacterHelper";
+import {EnumType} from "../../interfaces/AvroSchema";
+import {ExportModel} from "../../models/ExportModel";
+import {BaseConverter} from "./base/BaseConverter";
 
 export class EnumConverter extends BaseConverter {
 
@@ -14,6 +14,7 @@ export class EnumConverter extends BaseConverter {
 
         const exportModel = new ExportModel();
         exportModel.name = data.name;
+        exportModel.namespace = data.namespace;
         exportModel.content = this.rows.join(SpecialCharacterHelper.NEW_LINE);
         this.exports.push(exportModel);
 

@@ -32,6 +32,7 @@ export interface MapType extends AvroSchema {
 export interface EnumType extends AvroSchema {
     type: "enum";
     name: string;
+    namespace: string;
     symbols: string[];
 }
 
