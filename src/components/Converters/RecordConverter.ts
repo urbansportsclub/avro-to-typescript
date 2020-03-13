@@ -1,12 +1,11 @@
 import {SpecialCharacterHelper} from "../../helpers/SpecialCharacterHelper";
 import {TypeHelper} from "../../helpers/TypeHelper";
-import {RecordType, Type} from "../../interfaces/AvroSchema";
+import {EnumType, RecordType, Type} from "../../interfaces/AvroSchema";
 import {ExportModel} from "../../models/ExportModel";
 import {BaseConverter} from "./base/BaseConverter";
 import {EnumConverter} from "./EnumConverter";
 import {LogicalTypeConverter} from "./LogicalTypeConverter";
 import {PrimitiveConverter} from "./PrimitiveConverter";
-import {EnumType} from "../../../dist/src";
 
 export class RecordConverter extends BaseConverter {
 
