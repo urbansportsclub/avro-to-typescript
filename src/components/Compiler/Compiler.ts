@@ -1,12 +1,12 @@
 import * as fs from "fs";
 import * as path from "path";
+import {EnumConverter} from "../..";
 import {DirHelper} from "../../helpers/DirHelper";
 import {TypeHelper} from "../../helpers/TypeHelper";
 import {CompilerOutput} from "../../interfaces/CompilerOutput";
 import {ExportModel} from "../../models/ExportModel";
 import {ClassConverter} from "../Converters/ClassConverter";
 import {BaseCompiler} from "./base/BaseCompiler";
-import {EnumConverter} from "../..";
 
 export class Compiler extends BaseCompiler {
     public exports: ExportModel[];

@@ -6,6 +6,7 @@ import {BaseConverter} from "./base/BaseConverter";
 import {EnumConverter} from "./EnumConverter";
 import {LogicalTypeConverter} from "./LogicalTypeConverter";
 import {PrimitiveConverter} from "./PrimitiveConverter";
+import {EnumType} from "../../../dist/src";
 
 export class RecordConverter extends BaseConverter {
 
@@ -56,19 +57,7 @@ export class RecordConverter extends BaseConverter {
         }
 
         if (TypeHelper.isEnumType(type)) {
-            const canonicalName = `${type.namespace}.${type.name}`;
-            if (!(canonicalName in this.enumCache)) {
-                this.enumCache[canonicalName] = type;
-                const converter = new EnumConverter();
-                const exportModel = converter.convert(type);
-                this.enumExports.push(exportModel);
-            }
-
-            if (type.namespace) {
-                return `${type.namespace.split(".").join("_")}_${type.name}`;
-            } else {
-                return type.name;
-            }
+            return this.handleEnumType(type);
         }
 
         if (type instanceof Array) {
@@ -76,19 +65,7 @@ export class RecordConverter extends BaseConverter {
         }
 
         if (TypeHelper.isRecordType(type)) {
-            const canonicalName = `${type.namespace}.${type.name}`;
-            if (!(canonicalName in this.recordCache)) {
-                this.recordCache[canonicalName] = type;
-                const converter = new RecordConverter();
-                const exportModel = converter.convert(type);
-                this.interfaceExports.push(exportModel);
-            }
-
-            if (type.namespace) {
-                return `${type.namespace.split(".").join("_")}_${type.name}`;
-            } else {
-                return type.name;
-            }
+            return this.handleRecordType(type);
         }
 
         if (TypeHelper.isArrayType(type)) {
@@ -106,5 +83,37 @@ export class RecordConverter extends BaseConverter {
 
     protected getField(name: string, type: Type): string {
         return `${name}${TypeHelper.isOptional(type) ? "?" : ""}: ${this.convertType(type)}`;
+    }
+
+    private handleRecordType(type: RecordType) {
+        const canonicalName = `${type.namespace}.${type.name}`;
+        if (!(canonicalName in this.recordCache)) {
+            this.recordCache[canonicalName] = type;
+            const converter = new RecordConverter();
+            const exportModel = converter.convert(type);
+            this.interfaceExports.push(exportModel);
+        }
+
+        if (type.namespace) {
+            return `${type.namespace.split(".").join("_")}_${type.name}`;
+        } else {
+            return type.name;
+        }
+    }
+
+    private handleEnumType(type: EnumType) {
+        const canonicalName = `${type.namespace}.${type.name}`;
+        if (!(canonicalName in this.enumCache)) {
+            this.enumCache[canonicalName] = type;
+            const converter = new EnumConverter();
+            const exportModel = converter.convert(type);
+            this.enumExports.push(exportModel);
+        }
+
+        if (type.namespace) {
+            return `${type.namespace.split(".").join("_")}_${type.name}`;
+        } else {
+            return type.name;
+        }
     }
 }
