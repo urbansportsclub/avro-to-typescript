@@ -85,7 +85,8 @@ export class ClassConverter extends RecordConverter {
                 const name = `${exportModel.name}Interface as ${alias}`;
                 importLine = `import { ${name} } from "${mainDir}${dir}/${exportModel.name}";`;
             } else {
-                importLine = `import { ${exportModel.name}Interface } from "./${exportModel.name}";`;
+                const name = `${exportModel.name}Interface as ${exportModel.name}`;
+                importLine = `import { ${name} } from "./${exportModel.name}";`;
             }
 
             rows.push(importLine);

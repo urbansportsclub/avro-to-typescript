@@ -1,9 +1,9 @@
 // tslint:disable
 import { Type } from "avsc"
 import { BaseAvroRecord } from "../../../BaseAvroRecord";
-import { EmailAddressInterface } from "./EmailAddress";
-import { TwitterAccountInterface } from "./TwitterAccount";
-import { ToDoItemInterface } from "./ToDoItem";
+import { EmailAddressInterface as EmailAddress } from "./EmailAddress";
+import { TwitterAccountInterface as TwitterAccount } from "./TwitterAccount";
+import { ToDoItemInterface as ToDoItem } from "./ToDoItem";
 
 export interface UserInterface {
     id: number;

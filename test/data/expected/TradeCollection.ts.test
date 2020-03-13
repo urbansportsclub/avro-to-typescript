@@ -1,7 +1,7 @@
 // tslint:disable
 import { Type } from "avsc"
 import { BaseAvroRecord } from "../../../BaseAvroRecord";
-import { TradeInterface } from "./Trade";
+import { TradeInterface as Trade } from "./Trade";
 
 export interface TradeCollectionInterface {
     producerId: string;

@@ -1,7 +1,7 @@
 // tslint:disable
 import { Type } from "avsc"
 import { BaseAvroRecord } from "../BaseAvroRecord";
-import { ThingInterface } from "./Thing";
+import { ThingInterface as Thing } from "./Thing";
 
 export interface RecordWithRecordInterface {
     thing1: Thing;
