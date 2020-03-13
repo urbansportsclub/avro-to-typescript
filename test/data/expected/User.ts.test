@@ -1,31 +1,8 @@
 // tslint:disable
 import { BaseAvroRecord } from "../../../BaseAvroRecord";
-import { OAuthStatus } from "./OAuthStatusEnum";
-import { ToDoStatus } from "./ToDoStatusEnum";
-
-export interface EmailAddress {
-    address: string;
-    verified: boolean;
-    dateAdded: number;
-    dateBounced?: null | number;
-}
-
-export interface TwitterAccount {
-    status: OAuthStatus;
-    userId: number;
-    screenName: string;
-    oauthToken: string;
-    oauthTokenSecret?: null | string;
-    dateAuthorized: number;
-}
-
-export interface ToDoItem {
-    status: ToDoStatus;
-    title: string;
-    description?: null | string;
-    snoozeDate?: null | number;
-    subItems: any[];
-}
+import { EmailAddressInterface } from "./EmailAddress";
+import { TwitterAccountInterface } from "./TwitterAccount";
+import { ToDoItemInterface } from "./ToDoItem";
 
 export interface UserInterface {
     id: number;

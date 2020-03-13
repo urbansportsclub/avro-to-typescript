@@ -1,6 +1,6 @@
 // tslint:disable
 import { BaseAvroRecord } from "../BaseAvroRecord";
-import { Flavor } from "./FlavorEnum";
+import { Flavor } from "./Flavor";
 
 export interface RecordWithEnumDefaultInterface {
     flavor: Flavor;

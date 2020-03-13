@@ -1,17 +1,6 @@
 // tslint:disable
 import { BaseAvroRecord } from "../../../BaseAvroRecord";
-import { TradeType } from "./TradeTypeEnum";
-import { TradeDirection } from "./TradeDirectionEnum";
-
-export interface Trade {
-    id: string;
-    price: number;
-    amount: number;
-    datetime: string;
-    timestamp: number;
-    type?: null | TradeType;
-    side?: null | TradeDirection;
-}
+import { TradeInterface } from "./Trade";
 
 export interface TradeCollectionInterface {
     producerId: string;
