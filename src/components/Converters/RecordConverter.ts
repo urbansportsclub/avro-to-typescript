@@ -1,16 +1,17 @@
-import { SpecialCharacterHelper } from "../../helpers/SpecialCharacterHelper";
-import { TypeHelper } from "../../helpers/TypeHelper";
-import {EnumType, Field, RecordType, Type} from "../../interfaces/AvroSchema";
-import { ExportModel } from "../../models/ExportModel";
-import { BaseConverter } from "./base/BaseConverter";
-import { EnumConverter } from "./EnumConverter";
-import { LogicalTypeConverter } from "./LogicalTypeConverter";
-import { PrimitiveConverter } from "./PrimitiveConverter";
+import {SpecialCharacterHelper} from "../../helpers/SpecialCharacterHelper";
+import {TypeHelper} from "../../helpers/TypeHelper";
+import {RecordType, Type} from "../../interfaces/AvroSchema";
+import {ExportModel} from "../../models/ExportModel";
+import {BaseConverter} from "./base/BaseConverter";
+import {EnumConverter} from "./EnumConverter";
+import {LogicalTypeConverter} from "./LogicalTypeConverter";
+import {PrimitiveConverter} from "./PrimitiveConverter";
 
 export class RecordConverter extends BaseConverter {
 
     protected interfaceRows: string[] = [];
-    protected recordCache: {[recordName: string]: any} = {};
+    protected enumCache: { [enumName: string]: any } = {};
+    protected recordCache: { [recordName: string]: any } = {};
 
     public convert(data: any): ExportModel {
         data = this.getData(data) as RecordType;
@@ -19,6 +20,7 @@ export class RecordConverter extends BaseConverter {
 
         const exportModel = new ExportModel();
         exportModel.name = data.name;
+        exportModel.namespace = data.namespace;
         exportModel.content = this.interfaceRows.join(SpecialCharacterHelper.NEW_LINE);
         this.exports.push(exportModel);
 
@@ -54,11 +56,19 @@ export class RecordConverter extends BaseConverter {
         }
 
         if (TypeHelper.isEnumType(type)) {
-            const converter = new EnumConverter();
-            const exportModel = converter.convert(type);
-            this.enumExports.push(exportModel);
+            const canonicalName = `${type.namespace}.${type.name}`;
+            if (!(canonicalName in this.enumCache)) {
+                this.enumCache[canonicalName] = type;
+                const converter = new EnumConverter();
+                const exportModel = converter.convert(type);
+                this.enumExports.push(exportModel);
+            }
 
-            return exportModel.name;
+            if (type.namespace) {
+                return `${type.namespace.split(".").join("_")}_${type.name}`;
+            } else {
+                return type.name;
+            }
         }
 
         if (type instanceof Array) {
@@ -66,13 +76,19 @@ export class RecordConverter extends BaseConverter {
         }
 
         if (TypeHelper.isRecordType(type)) {
-            if (! (type.name in this.recordCache) ) {
-                this.recordCache[type.name.toString()] = type;
-                this.interfaceRows.push(...this.extractInterface(type));
-                this.interfaceRows.push("");
+            const canonicalName = `${type.namespace}.${type.name}`;
+            if (!(canonicalName in this.recordCache)) {
+                this.recordCache[canonicalName] = type;
+                const converter = new RecordConverter();
+                const exportModel = converter.convert(type);
+                this.interfaceExports.push(exportModel);
             }
 
-            return type.name;
+            if (type.namespace) {
+                return `${type.namespace.split(".").join("_")}_${type.name}`;
+            } else {
+                return type.name;
+            }
         }
 
         if (TypeHelper.isArrayType(type)) {

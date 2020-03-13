@@ -1,8 +1,8 @@
-import { SpecialCharacterHelper } from "../../helpers/SpecialCharacterHelper";
-import { TypeHelper } from "../../helpers/TypeHelper";
-import { RecordType } from "../../interfaces/AvroSchema";
-import { ExportModel } from "../../models/ExportModel";
-import { RecordConverter } from "./RecordConverter";
+import {SpecialCharacterHelper} from "../../helpers/SpecialCharacterHelper";
+import {TypeHelper} from "../../helpers/TypeHelper";
+import {RecordType} from "../../interfaces/AvroSchema";
+import {ExportModel} from "../../models/ExportModel";
+import {RecordConverter} from "./RecordConverter";
 
 export class ClassConverter extends RecordConverter {
 
@@ -30,12 +30,15 @@ export class ClassConverter extends RecordConverter {
         const interfaceExportModel: ExportModel = new ExportModel();
 
         importExportModel.name = "imports";
+        importExportModel.namespace = data.namespace;
         importExportModel.content = this.importRows.join(SpecialCharacterHelper.NEW_LINE);
 
         classExportModel.name = data.name;
+        classExportModel.namespace = data.namespace;
         classExportModel.content = this.classRows.join(SpecialCharacterHelper.NEW_LINE);
 
         interfaceExportModel.name = data.name + this.interfaceSuffix;
+        interfaceExportModel.namespace = data.namespace;
         interfaceExportModel.content = this.interfaceRows.join(SpecialCharacterHelper.NEW_LINE);
 
         this.exports = [
@@ -51,11 +54,38 @@ export class ClassConverter extends RecordConverter {
         const rows: string[] = [];
         const dirsUp: number = data.namespace.split(".").length;
 
-        rows.push(`// tslint:disable`);
-        rows.push(`import { BaseAvroRecord } from "` + "../".repeat(dirsUp) + `BaseAvroRecord";`);
+        const mainDir = "../".repeat(dirsUp);
 
-        for (const enumFile of this.enumExports) {
-            const importLine = `import { ${enumFile.name} } from "./${enumFile.name}Enum";`;
+        rows.push(`// tslint:disable`);
+        rows.push(`import { BaseAvroRecord } from "${mainDir}BaseAvroRecord";`);
+
+        for (const exportModel of this.enumExports) {
+            let importLine: string;
+
+            if (exportModel.namespace) {
+                const dir = exportModel.namespace.split(".").join("/");
+                const alias = `${exportModel.namespace.split(".").join("_")}_${exportModel.name}`;
+
+                importLine = `import { ${exportModel.name} as ${alias} } from "${mainDir}${dir}/${exportModel.name}";`;
+            } else {
+                importLine = `import { ${exportModel.name} } from "./${exportModel.name}";`;
+            }
+
+            rows.push(importLine);
+        }
+
+        for (const exportModel of this.interfaceExports) {
+            let importLine: string;
+
+            if (exportModel.namespace) {
+                const dir = exportModel.namespace.split(".").join("/");
+                const alias = `${exportModel.namespace.split(".").join("_")}_${exportModel.name}`;
+
+                importLine = `import { ${exportModel.name}Interface as ${alias} } from "${mainDir}${dir}/${exportModel.name}";`;
+            } else {
+                importLine = `import { ${exportModel.name}Interface } from "./${exportModel.name}";`;
+            }
+
             rows.push(importLine);
         }
 
