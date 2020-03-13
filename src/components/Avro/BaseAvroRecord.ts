@@ -1,7 +1,7 @@
 import * as avro from "avsc";
-import { Schema, Type } from "avsc";
-import { Memoize } from "typescript-memoize";
-import { AvroRecord } from "./AvroRecord";
+import {Type} from "avsc";
+import {Memoize} from "typescript-memoize";
+import {AvroRecord} from "./AvroRecord";
 
 export abstract class BaseAvroRecord implements AvroRecord {
 
@@ -26,4 +26,7 @@ export abstract class BaseAvroRecord implements AvroRecord {
 
     public abstract subject(): string;
 
+    public getType(): Type {
+        return BaseAvroRecord.getTypeForSchema(this.schema());
+    }
 }
