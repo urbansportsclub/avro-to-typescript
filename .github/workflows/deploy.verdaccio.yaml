@@ -33,30 +33,10 @@ jobs:
       - name: Set Node version
         uses: actions/setup-node@v3
         with:
-          node-version: "10"
+          node-version: "13"
 
       - name: Install NPM dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
-        run: npm install
-
-      - name: Set SSH key
-        uses: webfactory/ssh-agent@v0.5.4
-        with:
-          ssh-private-key: ${{ secrets.COMPOSER_SSH }}
-
-      - name: Publish Javascript Lib
-        run: npm run generate-javascript-lib
-
-      - name: Remove old one
-        run: rm -rf lang/javascript/src
-
-      - name: Moving new one
-        run: mv gen/javascript/src lang/javascript/src
-
-      - name: Change Directory
-        run: cd lang/javascript
-
-      - name: Installing Packages
         run: npm install
 
       - name: 'Taging the JS Library'
@@ -67,11 +47,3 @@ jobs:
 
       - name: Publish Repository
         run: npm publish --registry ${{ env.PACKAGES_REGISTRY_URL }}
-
-      - name: Adding to Git Comment
-        run: git add src/
-      
-      - name: Moving to Top
-        run: cd ../..
-
-      
