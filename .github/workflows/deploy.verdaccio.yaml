@@ -1,0 +1,124 @@
+name: Deploy To Verdaccio
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  PACKAGES_REGISTRY_URL: http://onefit-verdaccio.onefit-dev.svc.cluster.local:4873
+
+jobs:
+  ci:
+    name: Continuous Integration
+    runs-on: [self-hosted, deploy]
+    outputs:
+      image_version: ${{ steps.subscriber_meta.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          clean: true
+
+      - name: Restore node_modules
+        uses: actions/cache@v3
+        id: node-cache
+        with:
+          path: ./node_modules
+          key: node-cache-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
+
+      - name: Set Node version
+        uses: actions/setup-node@v3
+        with:
+          node-version: "10"
+
+      - name: Install NPM dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Generate Schemas
+        run: npm run generate-schemas
+
+      - name: Validate Schemas
+        env: 
+          SCHEMA_REGISTRY: ${{ env.SCHEMA_REGISTRY_URL }}
+        run: npm run validate-schemas
+
+      - name: Publish Schemas
+        env: 
+          SCHEMA_REGISTRY: ${{ env.SCHEMA_REGISTRY_URL }}
+        run: npm run publish-schemas
+
+  library_generation:
+    name: Publishing Library
+    runs-on: [self-hosted, deploy]
+    needs: ci
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          clean: true
+
+      - name: Restore node_modules
+        uses: actions/cache@v3
+        id: node-cache
+        with:
+          path: ./node_modules
+          key: node-cache-2-${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
+
+      - name: Set Node version
+        uses: actions/setup-node@v3
+        with:
+          node-version: "10"
+
+      - name: Install NPM dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Set SSH key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.COMPOSER_SSH }}
+
+      - name: Publish Javascript Lib
+        run: npm run generate-javascript-lib
+
+      - name: Remove old one
+        run: rm -rf lang/javascript/src
+
+      - name: Moving new one
+        run: mv gen/javascript/src lang/javascript/src
+
+      - name: Change Directory
+        run: cd lang/javascript
+
+      - name: Installing Packages
+        run: npm install
+
+      - name: 'Taging the JS Library'
+        run: npm --no-git-tag-version version prerelease --preid=develop.`date +%s` --allow-same-version
+
+      - name: NPM Login
+        run: npm config set _auth ${{ secrets.VERDACCIO_REGISTORY_SECRET }}
+
+      - name: Publish Repository
+        run: npm publish --registry ${{ env.PACKAGES_REGISTRY_URL }}
+
+      - name: Adding to Git Comment
+        run: git add src/
+      
+      - name: Moving to Top
+        run: cd ../..
+
+      
