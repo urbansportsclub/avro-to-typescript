@@ -1,6 +1,7 @@
 name: Continous Integration
 
 on:
+  workflow_dispatch:
   pull_request:
 
 concurrency:

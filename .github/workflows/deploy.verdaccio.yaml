@@ -1,7 +1,10 @@
 name: Deploy To Verdaccio
 
 on:
+  workflow_dispatch:
   push:
+    branches:
+      - master
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
