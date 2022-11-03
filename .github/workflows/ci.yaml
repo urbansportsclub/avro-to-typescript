@@ -36,17 +36,9 @@ jobs:
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm install
 
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
+      - name: Unit Tests
+        run: npm run test
 
-      - name: Generate Schemas
-        run: npm run generate-schemas
-
-      - name: Validate Schemas
-        env: 
-          SCHEMA_REGISTRY: ${{ env.SCHEMA_REGISTRY_URL }}
-        run: npm run validate-schemas
+      - name: TSLint
+        run: npm run tslint
       

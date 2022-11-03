@@ -35,7 +35,7 @@ jobs:
       - name: Set Node version
         uses: actions/setup-node@v3
         with:
-          node-version: "10"
+          node-version: "13"
 
       - name: Install NPM dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
